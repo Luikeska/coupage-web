@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COUPAGE Barcelona</title>
+<meta name="description" content="COUPAGE, productora audiovisual en Barcelona: live streaming, podcasts, grabación médica, entrevistas, fotografía y documental.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: visor de cámara en el hero, servicios como escaleta de emisión, contacto como hoja de rodaje */
+  --ink:#0e0c10;        /* fondo, negro con sesgo violeta */
+  --panel:#17141b;      /* superficies */
+  --line:#2c2733;       /* filetes */
+  --paper:#ece8f0;      /* texto principal */
+  --muted:#9a93a3;      /* texto secundario */
+  --violet:#b04ee0;     /* acento de marca */
+  --rec:#ff3b30;        /* piloto REC */
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:rgba(14,12,16,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:28px;height:64px}
+.brand{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--violet);display:inline-block}
+nav{display:flex;gap:22px;margin-left:auto}
+nav a{text-decoration:none;color:var(--muted);font-size:15px}
+nav a:hover{color:var(--paper)}
+.lang{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:500 12px var(--mono);padding:6px 9px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--violet);color:#fff;text-decoration:none;font-weight:600;font-size:15px;padding:11px 18px;border-radius:4px;border:0;cursor:pointer;font-family:var(--body)}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--paper)}
+.btn.ghost:hover{border-color:var(--paper)}
+@media (max-width:860px){nav{display:none}.bar{gap:14px}.bar .btn{margin-left:auto;padding:9px 13px;font-size:14px}}
+
+/* Hero = visor */
+.hero{padding:28px 0 64px}
+.viewfinder{position:relative;border-radius:6px;overflow:hidden;background:radial-gradient(120% 90% at 70% 30%,#2a1735 0%,#140f18 55%,#0b090d 100%);padding:clamp(28px,6vw,72px) clamp(22px,5vw,64px) clamp(28px,5vw,56px)}
+.viewfinder canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.13;pointer-events:none;mix-blend-mode:screen}
+.corner{position:absolute;width:26px;height:26px;border-color:rgba(236,232,240,.55);border-style:solid;border-width:0}
+.c1{top:14px;left:14px;border-top-width:2px;border-left-width:2px}
+.c2{top:14px;right:14px;border-top-width:2px;border-right-width:2px}
+.c3{bottom:14px;left:14px;border-bottom-width:2px;border-left-width:2px}
+.c4{bottom:14px;right:14px;border-bottom-width:2px;border-right-width:2px}
+.osd{position:relative;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:rgba(236,232,240,.8);margin-bottom:clamp(36px,7vw,80px)}
+.rec{display:flex;align-items:center;gap:8px}
+.rec b{width:10px;height:10px;border-radius:50%;background:var(--rec);box-shadow:0 0 12px var(--rec);animation:blink 1.2s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.rec b{animation:none}}
+.tc{font-variant-numeric:tabular-nums}
+.hero h1{position:relative;margin:0;font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;font-size:clamp(54px,10.5vw,148px);letter-spacing:.005em;text-wrap:balance}
+.hero h1 .roll{display:block;color:var(--violet);min-height:.9em}
+.hero h1 .roll span{display:inline-block;transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .45s}
+.hero h1 .roll span.out{transform:translateY(-.25em);opacity:0}
+.hero-foot{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap;margin-top:clamp(28px,5vw,48px)}
+.hero-foot p{max-width:52ch;margin:0;color:#cfc8d6;font-size:18px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+/* Secciones */
+section{padding:72px 0}
+.head{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:baseline;margin-bottom:36px}
+.head .mono{color:var(--violet)}
+h2{margin:0;font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(38px,5.5vw,64px);line-height:.95;text-wrap:balance}
+@media (max-width:760px){.head{grid-template-columns:1fr;gap:8px}}
+
+/* Escaleta */
+.rundown{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:200px 1.1fr 1.4fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line);align-items:start;transition:background .2s}
+.row:hover{background:linear-gradient(90deg,rgba(176,78,224,.08),transparent 70%)}
+.row .num{color:var(--muted);display:flex;gap:14px}
+.row .num em{font-style:normal;color:var(--violet)}
+.row h3{margin:0;font-family:var(--display);font-weight:800;font-size:34px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.row p{margin:0;color:#cfc8d6}
+.row .tags{margin-top:10px;color:var(--muted)}
+@media (max-width:760px){.row{grid-template-columns:1fr;gap:8px}}
+
+/* Proceso */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.step{padding:26px 22px;border-right:1px solid var(--line);background:var(--panel)}
+.step:last-child{border-right:0}
+.step .mono{color:var(--violet)}
+.step h3{margin:12px 0 8px;font-size:19px;font-weight:600}
+.step p{margin:0;color:var(--muted);font-size:15.5px}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}.step:nth-child(2){border-right:0}.step:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:0}}
+
+/* Nosotros */
+.about{display:grid;grid-template-columns:200px 1fr 1fr;gap:24px}
+.about p{margin:0 0 16px;max-width:60ch;color:#cfc8d6}
+.clients{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.clients span{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14.5px;color:var(--paper)}
+@media (max-width:900px){.about{grid-template-columns:1fr}.about>div:first-child{display:none}}
+
+/* Contacto = hoja de rodaje */
+.contact{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+.sheet{border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.sheet dl{margin:0}
+.sheet .line{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.sheet .line:last-child{border-bottom:0}
+.sheet dt{color:var(--muted)}
+.sheet dd{margin:0;font-size:17px}
+.sheet dd a{text-decoration:none;border-bottom:1px solid var(--violet)}
+form{display:grid;gap:14px;padding:22px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:grid;gap:6px;font-size:14px;color:var(--muted)}
+input,select,textarea{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:4px;color:var(--paper);font:16px var(--body);padding:11px 12px}
+input:focus,select:focus,textarea:focus{border-color:var(--violet);outline:none}
+textarea{min-height:120px;resize:vertical}
+.note{font-size:14px;color:var(--muted);margin:0}
+@media (max-width:860px){.contact{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#inicio" aria-label="COUPAGE, inicio"><i></i>COUPAGE</a>
+    <nav aria-label="Principal">
+      <a href="#servicios" data-i18n="nav_services">Servicios</a>
+      <a href="#proceso" data-i18n="nav_process">Cómo trabajamos</a>
+      <a href="#nosotros" data-i18n="nav_about">Nosotros</a>
+      <a href="#contacto" data-i18n="nav_contact">Contacto</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Idioma">
+      <button type="button" id="lang-es" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="btn" href="#contacto" data-i18n="cta_quote">Pide presupuesto</a>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="wrap hero">
+    <div class="viewfinder">
+      <canvas id="grain" aria-hidden="true"></canvas>
+      <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+      <div class="osd mono" aria-hidden="true">
+        <span class="rec"><b></b>REC</span>
+        <span>BARCELONA · 41.39°N 2.17°E</span>
+        <span class="tc" id="tc">TC 00:00:00:00</span>
+      </div>
+      <h1><span data-i18n="hero_a">Producimos</span><span class="roll"><span id="roll">live streaming</span></span></h1>
+      <div class="hero-foot">
+        <p data-i18n="hero_p">Somos una productora audiovisual de Barcelona. Grabamos, emitimos y editamos para empresas, hospitales, instituciones y creadores de contenido.</p>
+        <div class="ctas">
+          <a class="btn" href="#contacto" data-i18n="cta_project">Cuéntanos tu proyecto</a>
+          <a class="btn ghost" href="#servicios" data-i18n="cta_services">Ver servicios</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="servicios">
+    <div class="wrap">
+      <div class="head"><span class="mono" data-i18n="s_label">Escaleta</span><h2 data-i18n="s_title">Lo que hacemos</h2></div>
+      <div class="rundown">
+        <article class="row"><div class="num mono"><em>01</em><span>LIVE</span></div><h3>Live streaming</h3><div><p data-i18n="s1">Producción de eventos en directo con varias cámaras, realización y emisión a YouTube, LinkedIn, Vimeo o vuestra propia plataforma.</p><div class="tags mono" data-i18n="s1t">Multicámara · Realización · Emisión</div></div></article>
+        <article class="row"><div class="num mono"><em>02</em><span>AUDIO+VÍDEO</span></div><h3>Podcasts</h3><div><p data-i18n="s2">Grabación en audio y vídeo, edición, diseño de sonido y publicación en las plataformas habituales.</p><div class="tags mono" data-i18n="s2t">Grabación · Edición · Distribución</div></div></article>
+        <article class="row"><div class="num mono"><em>03</em><span>QUIRÓFANO</span></div><h3 data-i18n="s3h">Grabación médica</h3><div><p data-i18n="s3">Documentación audiovisual de cirugías y procedimientos, con equipo adaptado al quirófano y respeto por el protocolo clínico.</p><div class="tags mono" data-i18n="s3t">Cirugía · Congresos · Formación</div></div></article>
+        <article class="row"><div class="num mono"><em>04</em><span>2–3 CÁM.</span></div><h3 data-i18n="s4h">Entrevistas</h3><div><p data-i18n="s4">Entrevistas con iluminación cuidada, varios ángulos y postproducción completa.</p><div class="tags mono" data-i18n="s4t">Iluminación · Sonido · Montaje</div></div></article>
+        <article class="row"><div class="num mono"><em>05</em><span>FOTO</span></div><h3 data-i18n="s5h">Fotografía</h3><div><p data-i18n="s5">Fotografía corporativa, de producto, de eventos y retrato, con retoque profesional.</p><div class="tags mono" data-i18n="s5t">Corporativa · Producto · Eventos</div></div></article>
+        <article class="row"><div class="num mono"><em>06</em><span>DOC</span></div><h3 data-i18n="s6h">Documental</h3><div><p data-i18n="s6">Del guion y la documentación al rodaje y la postproducción final.</p><div class="tags mono" data-i18n="s6t">Guion · Rodaje · Postproducción</div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="proceso">
+    <div class="wrap">
+      <div class="head"><span class="mono" data-i18n="p_label">Proceso</span><h2 data-i18n="p_title">Cómo trabajamos</h2></div>
+      <div class="steps">
+        <div class="step"><span class="mono">01</span><h3 data-i18n="p1h">Hablamos</h3><p data-i18n="p1">Nos cuentas qué necesitas, para cuándo y para quién. Te enviamos una propuesta a medida.</p></div>
+        <div class="step"><span class="mono">02</span><h3 data-i18n="p2h">Preproducción</h3><p data-i18n="p2">Visitamos el espacio si hace falta, preparamos equipo, guion y plan de rodaje.</p></div>
+        <div class="step"><span class="mono">03</span><h3 data-i18n="p3h">Rodaje o directo</h3><p data-i18n="p3">Grabamos o emitimos con el equipo y las personas adecuadas para cada proyecto.</p></div>
+        <div class="step"><span class="mono">04</span><h3 data-i18n="p4h">Entrega</h3><p data-i18n="p4">Editamos, revisamos contigo y entregamos en los formatos que necesites.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros">
+    <div class="wrap about">
+      <div><span class="mono" style="color:var(--violet)" data-i18n="a_label">Nosotros</span></div>
+      <div>
+        <h2 data-i18n="a_title">Una productora pequeña, cerca de cada proyecto</h2>
+      </div>
+      <div>
+        <p data-i18n="a1">Estamos en Barcelona y combinamos la parte creativa con la técnica. Hacemos desde un directo multicámara hasta la grabación de una intervención quirúrgica.</p>
+        <p data-i18n="a2">Cada producción es distinta, así que nos adaptamos a lo que necesita cada cliente y le acompañamos de principio a fin.</p>
+        <div class="clients" aria-label="Con quién trabajamos">
+          <span data-i18n="c1">Empresas</span><span data-i18n="c2">Hospitales</span><span data-i18n="c3">Instituciones</span><span data-i18n="c4">Creadores de contenido</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap">
+      <div class="head"><span class="mono" data-i18n="k_label">Hoja de rodaje</span><h2 data-i18n="k_title">Hablemos de tu proyecto</h2></div>
+      <div class="contact">
+        <div class="sheet">
+          <dl>
+            <div class="line"><dt class="mono" data-i18n="k_email">Email</dt><dd><a href="mailto:info@coupagebcn.com">info@coupagebcn.com</a></dd></div>
+            <div class="line"><dt class="mono" data-i18n="k_phone">Teléfono</dt><dd><a href="tel:+34620660085">+34 620 660 085</a></dd></div>
+            <div class="line"><dt class="mono" data-i18n="k_loc">Base</dt><dd data-i18n="k_locv">Barcelona, Cataluña</dd></div>
+            <div class="line"><dt class="mono" data-i18n="k_area">Cobertura</dt><dd data-i18n="k_areav">Barcelona y desplazamientos</dd></div>
+          </dl>
+        </div>
+        <div class="sheet">
+          <form id="form" novalidate>
+            <div class="two">
+              <label for="f-name"><span data-i18n="f_name">Nombre</span><input id="f-name" name="name" required autocomplete="name"></label>
+              <label for="f-email"><span data-i18n="f_email">Email</span><input id="f-email" name="email" type="email" required autocomplete="email"></label>
+            </div>
+            <label for="f-type"><span data-i18n="f_type">Tipo de proyecto</span>
+              <select id="f-type" name="type">
+                <option>Live streaming</option><option>Podcast</option><option data-i18n="s3h">Grabación médica</option><option data-i18n="s4h">Entrevistas</option><option data-i18n="s5h">Fotografía</option><option data-i18n="s6h">Documental</option><option data-i18n="f_other">Otro</option>
+              </select>
+            </label>
+            <label for="f-msg"><span data-i18n="f_msg">Cuéntanos qué necesitas, fecha y lugar</span><textarea id="f-msg" name="message" required></textarea></label>
+            <button class="btn" type="submit" data-i18n="f_send">Enviar</button>
+            <p class="note" id="f-note" role="status" data-i18n="f_note">Te responderemos lo antes posible.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year">2026</span> COUPAGE · Barcelona</span>
+    <span class="mono">info@coupagebcn.com · +34 620 660 085</span>
+  </div>
+</footer>
+
+<script>
+const T = {
+  es: {
+    roll: ["live streaming","podcasts","grabación médica","entrevistas","fotografía","documental"],
+    f_ok: "Se ha abierto tu programa de correo con el mensaje. Si no se abre, escríbenos a info@coupagebcn.com.",
+    f_err: "Rellena nombre, email y mensaje, por favor."
+  },
+  en: {
+    roll: ["live streaming","podcasts","medical recording","interviews","photography","documentary"],
+    nav_services:"Services", nav_process:"How we work", nav_about:"About", nav_contact:"Contact",
+    cta_quote:"Get a quote", hero_a:"We produce",
+    hero_p:"We are an audiovisual production company in Barcelona. We film, stream and edit for companies, hospitals, institutions and content creators.",
+    cta_project:"Tell us about your project", cta_services:"See services",
+    s_label:"Rundown", s_title:"What we do",
+    s1:"Live event production with multiple cameras, vision mixing and streaming to YouTube, LinkedIn, Vimeo or your own platform.", s1t:"Multicam · Vision mixing · Streaming",
+    s2:"Audio and video recording, editing, sound design and publishing on the usual platforms.", s2t:"Recording · Editing · Distribution",
+    s3h:"Medical recording", s3:"Audiovisual documentation of surgeries and procedures, with equipment suited to the operating room and respect for clinical protocol.", s3t:"Surgery · Congresses · Training",
+    s4h:"Interviews", s4:"Interviews with careful lighting, several angles and full post-production.", s4t:"Lighting · Sound · Editing",
+    s5h:"Photography", s5:"Corporate, product, event and portrait photography, with professional retouching.", s5t:"Corporate · Product · Events",
+    s6h:"Documentary", s6:"From script and research to shooting and final post-production.", s6t:"Script · Shooting · Post-production",
+    p_label:"Process", p_title:"How we work",
+    p1h:"We talk", p1:"You tell us what you need, when and for whom. We send you a tailored proposal.",
+    p2h:"Pre-production", p2:"We visit the location if needed and prepare equipment, script and shooting plan.",
+    p3h:"Shoot or live", p3:"We film or stream with the right equipment and people for each project.",
+    p4h:"Delivery", p4:"We edit, review with you and deliver in the formats you need.",
+    a_label:"About", a_title:"A small production company, close to every project",
+    a1:"We are based in Barcelona and combine the creative and the technical side. We do everything from a multicam live stream to filming a surgical procedure.",
+    a2:"Every production is different, so we adapt to what each client needs and stay with them from start to finish.",
+    c1:"Companies", c2:"Hospitals", c3:"Institutions", c4:"Content creators",
+    k_label:"Call sheet", k_title:"Let's talk about your project",
+    k_email:"Email", k_phone:"Phone", k_loc:"Base", k_locv:"Barcelona, Catalonia", k_area:"Coverage", k_areav:"Barcelona and beyond",
+    f_name:"Name", f_email:"Email", f_type:"Project type", f_other:"Other", f_msg:"Tell us what you need, date and place", f_send:"Send", f_note:"We'll get back to you as soon as we can.",
+    f_ok:"Your email app has opened with the message. If it didn't, write to us at info@coupagebcn.com.",
+    f_err:"Please fill in name, email and message."
+  }
+};
+// guardar textos originales en español
+document.querySelectorAll("[data-i18n]").forEach(el => { T.es[el.dataset.i18n] ??= el.textContent; });
+let lang = "es";
+try { lang = localStorage.getItem("coupage-lang") || (navigator.language||"").startsWith("es") || (navigator.language||"").startsWith("ca") ? (localStorage.getItem("coupage-lang")||"es") : "en"; } catch(e) {}
+function setLang(l){
+  lang = l; document.documentElement.lang = l;
+  document.querySelectorAll("[data-i18n]").forEach(el => { const v = T[l][el.dataset.i18n]; if (v) el.textContent = v; });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === l));
+  ri = 0; document.getElementById("roll").textContent = T[l].roll[0];
+  try { localStorage.setItem("coupage-lang", l); } catch(e) {}
+}
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+
+// palabra rotatoria
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let ri = 0; const roll = document.getElementById("roll");
+setLang(lang);
+if (!reduce) setInterval(() => {
+  roll.classList.add("out");
+  setTimeout(() => { ri = (ri + 1) % T[lang].roll.length; roll.textContent = T[lang].roll[ri]; roll.classList.remove("out"); }, 450);
+}, 2400);
+
+// timecode a 25 fps (estándar europeo)
+const tc = document.getElementById("tc"); const p = n => String(n).padStart(2,"0");
+function tick(){ const d = new Date(); tc.textContent = "TC " + [d.getHours(), d.getMinutes(), d.getSeconds(), Math.floor(d.getMilliseconds()/40)].map(p).join(":"); }
+tick(); setInterval(tick, reduce ? 1000 : 40);
+
+// grano de película
+const cv = document.getElementById("grain"), cx = cv.getContext("2d"); cv.width = 160; cv.height = 100;
+function grain(){ const im = cx.createImageData(160,100); for (let i=0;i<im.data.length;i+=4){ const v = Math.random()*255; im.data[i]=im.data[i+1]=im.data[i+2]=v; im.data[i+3]=255; } cx.putImageData(im,0,0); }
+grain(); if (!reduce) setInterval(grain, 90);
+
+// formulario: abre el correo con el mensaje
+document.getElementById("form").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, note = document.getElementById("f-note");
+  const el = f.elements;
+  const name = el["name"].value.trim(), email = el["email"].value.trim(), msg = el["message"].value.trim();
+  if (!name || !email || !msg) { note.textContent = T[lang].f_err; return; }
+  const subject = encodeURIComponent(el["type"].value + " · " + name);
+  const body = encodeURIComponent(msg + "\n\n" + name + "\n" + email);
+  location.href = "mailto:info@coupagebcn.com?subject=" + subject + "&body=" + body;
+  note.textContent = T[lang].f_ok;
+});
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
