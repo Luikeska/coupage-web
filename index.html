@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>COUPAGE Barcelona</title>
 <meta name="description" content="COUPAGE, productora audiovisual en Barcelona: live streaming, podcasts, grabación médica, entrevistas, fotografía y documental.">
+<link rel="icon" href="logo-mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Layout: visor de cámara en el hero, servicios como escaleta de emisión, contacto como hoja de rodaje */
@@ -36,8 +37,8 @@ img{max-width:100%}
 /* Header */
 header{position:sticky;top:0;z-index:20;background:rgba(14,12,16,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar{display:flex;align-items:center;gap:28px;height:64px}
-.brand{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:10px}
-.brand i{width:9px;height:9px;border-radius:50%;background:var(--violet);display:inline-block}
+.brand{font-family:Montserrat,var(--body);font-weight:700;font-size:19px;letter-spacing:.14em;text-decoration:none;display:flex;align-items:center;gap:11px}
+.brand img{width:32px;height:auto;display:block}
 nav{display:flex;gap:22px;margin-left:auto}
 nav a{text-decoration:none;color:var(--muted);font-size:15px}
 nav a:hover{color:var(--paper)}
@@ -53,7 +54,7 @@ nav a:hover{color:var(--paper)}
 /* Hero = visor */
 .hero{padding:28px 0 64px}
 .viewfinder{position:relative;border-radius:6px;overflow:hidden;background:radial-gradient(120% 90% at 70% 30%,#2a1735 0%,#140f18 55%,#0b090d 100%);padding:clamp(28px,6vw,72px) clamp(22px,5vw,64px) clamp(28px,5vw,56px)}
-.viewfinder canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.13;pointer-events:none;mix-blend-mode:screen}
+.viewfinder canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.08;pointer-events:none;mix-blend-mode:screen}
 .corner{position:absolute;width:26px;height:26px;border-color:rgba(236,232,240,.55);border-style:solid;border-width:0}
 .c1{top:14px;left:14px;border-top-width:2px;border-left-width:2px}
 .c2{top:14px;right:14px;border-top-width:2px;border-right-width:2px}
@@ -67,7 +68,7 @@ nav a:hover{color:var(--paper)}
 .tc{font-variant-numeric:tabular-nums}
 .hero h1{position:relative;margin:0;font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;font-size:clamp(54px,10.5vw,148px);letter-spacing:.005em;text-wrap:balance}
 .hero h1 .roll{display:block;color:var(--violet);min-height:.9em}
-.hero h1 .roll span{display:inline-block;transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .45s}
+.hero h1 .roll span{display:inline-block;background:linear-gradient(90deg,#c026ad,#6650e0);-webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .45s}
 .hero h1 .roll span.out{transform:translateY(-.25em);opacity:0}
 .hero-foot{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:28px;flex-wrap:wrap;margin-top:clamp(28px,5vw,48px)}
 .hero-foot p{max-width:52ch;margin:0;color:#cfc8d6;font-size:18px}
@@ -133,7 +134,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <body>
 <header>
   <div class="wrap bar">
-    <a class="brand" href="#inicio" aria-label="COUPAGE, inicio"><i></i>COUPAGE</a>
+    <a class="brand" href="#inicio" aria-label="COUPAGE, inicio"><img src="logo-mark.svg" alt="" width="32" height="31">COUPAGE</a>
     <nav aria-label="Principal">
       <a href="#servicios" data-i18n="nav_services">Servicios</a>
       <a href="#proceso" data-i18n="nav_process">Cómo trabajamos</a>
@@ -315,8 +316,8 @@ function tick(){ const d = new Date(); tc.textContent = "TC " + [d.getHours(), d
 tick(); setInterval(tick, reduce ? 1000 : 40);
 
 // grano de película
-const cv = document.getElementById("grain"), cx = cv.getContext("2d"); cv.width = 160; cv.height = 100;
-function grain(){ const im = cx.createImageData(160,100); for (let i=0;i<im.data.length;i+=4){ const v = Math.random()*255; im.data[i]=im.data[i+1]=im.data[i+2]=v; im.data[i+3]=255; } cx.putImageData(im,0,0); }
+const cv = document.getElementById("grain"), cx = cv.getContext("2d"); cv.width = 320; cv.height = 200;
+function grain(){ const im = cx.createImageData(320,200); for (let i=0;i<im.data.length;i+=4){ const v = Math.random()*255; im.data[i]=im.data[i+1]=im.data[i+2]=v; im.data[i+3]=255; } cx.putImageData(im,0,0); }
 grain(); if (!reduce) setInterval(grain, 90);
 
 // formulario: abre el correo con el mensaje
