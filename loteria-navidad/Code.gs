@@ -202,7 +202,8 @@ function menuEnlace() {
 // ---------------------------------------------------------------- Acceso a datos
 
 function libro_() {
-  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID') ||
+    (typeof SPREADSHEET_ID_POR_DEFECTO !== 'undefined' ? SPREADSHEET_ID_POR_DEFECTO : '');
   if (id) return SpreadsheetApp.openById(id);
   var activo = SpreadsheetApp.getActiveSpreadsheet();
   if (activo) return activo;
