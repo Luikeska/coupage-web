@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c1020; --panel:#141a30; --panel2:#1b2340; --line:#2a3358;
+  --text:#eef1fb; --muted:#9aa3c4; --gold:#e8c15a; --gold2:#f6dd8f;
+  --red:#d9433b; --green:#3fbf7f; --chip:#232c50;
+  --serif:"Playfair Display",Georgia,serif; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.45;
+  background-image:radial-gradient(1200px 500px at 50% -200px,#25306099,transparent)}
+.wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+header{text-align:center;padding:18px 0 8px}
+.kicker{letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--gold);font-weight:600}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,7vw,48px);margin:6px 0 4px;line-height:1.05}
+h1 span{color:var(--gold)}
+.sub{color:var(--muted);margin:0}
+h2{font-family:var(--serif);font-size:22px;margin:0 0 12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
+.estado{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px;
+  padding:10px 14px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:14px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.dot.live{background:var(--red);box-shadow:0 0 0 0 #d9433b88;animation:pulse 1.6s infinite}
+.dot.fin{background:var(--green)}
+@keyframes pulse{70%{box-shadow:0 0 0 10px #d9433b00}100%{box-shadow:0 0 0 0 #d9433b00}}
+.cuenta{font-family:var(--mono);font-size:clamp(26px,7vw,40px);text-align:center;color:var(--gold2);margin:6px 0 0}
+.cuenta small{display:block;font-family:var(--sans);font-size:13px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--panel2);border-radius:12px;padding:12px}
+.kpi b{display:block;font-family:var(--mono);font-size:clamp(17px,4vw,24px);color:var(--text)}
+.kpi.oro b{color:var(--gold)}
+.kpi span{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.mayores{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.bola{background:var(--panel2);border-radius:12px;padding:10px;text-align:center}
+.bola .n{font-family:var(--mono);font-size:22px;letter-spacing:.06em}
+.bola .t{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.bola.gordo{background:linear-gradient(135deg,#6b5216,#3a2c0b);border:1px solid var(--gold)}
+.bola.gordo .n{color:var(--gold2)}
+.bola.vacia .n{color:#4a5380}
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px 6px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+td.num,th.num{text-align:right;font-family:var(--mono);white-space:nowrap}
+.pos{color:var(--green)} .neg{color:var(--muted)}
+.lista{display:flex;flex-direction:column;gap:8px}
+.part{display:grid;grid-template-columns:auto 1fr auto;gap:4px 14px;align-items:center;background:var(--panel2);
+  border-radius:12px;padding:10px 12px;border:1px solid transparent}
+.part.premio{border-color:#e8c15a77}
+.part .decimo{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:.08em;color:var(--gold2);
+  background:#0c1020;border:1px dashed #e8c15a66;border-radius:8px;padding:4px 10px}
+.part .quien b{display:block}
+.part .quien span{color:var(--muted);font-size:13px}
+.part .cuanto{text-align:right;font-family:var(--mono)}
+.part .cuanto b{display:block;font-size:17px}
+.part .tags{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--text)}
+.tag.gordo{background:var(--gold);color:#1a1405;font-weight:700}
+.tag.mayor{background:#b88a2a;color:#120d02;font-weight:600}
+.tag.pedrea{background:#2f6d52}
+.tag.menor{background:#36427a}
+.tag.reintegro{background:#4b3b6b}
+.borrar{grid-column:1/-1;justify-self:end;background:none;border:1px solid var(--red);color:#ff8f88;border-radius:8px;
+  padding:3px 10px;font-size:12px;cursor:pointer}
+form{display:grid;grid-template-columns:1.3fr 1fr .8fr auto;gap:10px;align-items:end}
+label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}
+input{background:#0c1020;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;width:100%}
+input:focus{outline:2px solid var(--gold);border-color:transparent}
+input.numero{font-family:var(--mono);font-size:18px;letter-spacing:.1em}
+.btn{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--gold);color:#1a1405;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.wa{background:#25d366;color:#06281a}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.acciones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.msg{margin-top:10px;font-size:14px;min-height:1em}
+.msg.err{color:#ff8f88} .msg.ok{color:var(--green)}
+.nota{color:var(--muted);font-size:13px}
+.vacio{color:var(--muted);text-align:center;padding:16px}
+.filtro{margin-bottom:10px}
+details summary{cursor:pointer;color:var(--muted)}
+.admin{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.admin input{max-width:160px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+.cargando{text-align:center;color:var(--muted);padding:40px}
+@media (max-width:640px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  form{grid-template-columns:1fr 1fr}
+  form label:first-child{grid-column:1/-1}
+  form .btn{grid-column:1/-1}
+  .ocultar-movil{display:none}
+  th,td{padding:8px 4px}
+  .bola .n{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Comparsa de Estudiantes · Villena</div>
+    <h1>Lotería de Navidad <span><?= anio ?></span></h1>
+    <p class="sub"><?= nombreGrupo ?> 🎓🎄</p>
+    <div class="estado" id="estado"><span class="dot"></span><span>Cargando…</span></div>
+  </header>
+
+  <div id="app"><div class="cargando">Cargando participaciones…</div></div>
+
+  <section class="card">
+    <h2>Compartir</h2>
+    <div class="acciones">
+      <a class="btn wa" id="waInvitar" href="#" target="_blank" rel="noopener">📲 Invitar por WhatsApp</a>
+      <a class="btn wa" id="waResultado" href="#" target="_blank" rel="noopener" hidden>🏆 Enviar resultados</a>
+      <button class="btn ghost" id="copiar" type="button">🔗 Copiar enlace</button>
+    </div>
+    <p class="msg" id="msgCompartir"></p>
+  </section>
+
+  <section class="card">
+    <details id="panelAdmin">
+      <summary>Administración</summary>
+      <div class="admin">
+        <input type="password" id="pin" placeholder="PIN" inputmode="numeric" autocomplete="off">
+        <button class="btn ghost" type="button" id="activarAdmin">Mostrar botones de borrar</button>
+        <button class="btn ghost" type="button" id="forzar">Buscar premios ahora</button>
+      </div>
+      <p class="msg" id="msgAdmin"></p>
+    </details>
+  </section>
+
+  <footer>Datos de loteriasyapuestas.es · se actualizan cada 5 minutos el día del sorteo.<br>
+  Importes orientativos: comprueba siempre tu décimo en la web oficial. Neto = tras el 20 % de Hacienda sobre lo que pase de 40.000 € por décimo.</footer>
+</div>
+
+<script>
+var S = null, admin = false, temporizador = null, cuentaAtras = null;
+var eur = new Intl.NumberFormat('es-ES', {style:'currency', currency:'EUR'});
+var hora = new Intl.DateTimeFormat('es-ES', {hour:'2-digit', minute:'2-digit', timeZone:'Europe/Madrid'});
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function e(x){ return eur.format(x || 0); }
+
+function llamar(fn, args, ok, ko){
+  var r = google.script.run.withSuccessHandler(ok).withFailureHandler(function(err){
+    (ko || function(m){ console.error(m); })(err && err.message ? err.message.replace(/^Error:\s*/, '') : String(err));
+  });
+  r[fn].apply(r, args || []);
+}
+
+function cargar(){ llamar('obtenerEstado', [], pintar, function(m){ $('estado').innerHTML = '<span class="dot"></span><span>Error: '+esc(m)+'</span>'; }); }
+
+function pintar(estado){
+  S = estado;
+  pintarEstado();
+  var r = S.resultado, t = r.totales, html = '';
+
+  if (S.fase === 'antes') {
+    html += '<section class="card"><div class="cuenta" id="cuenta">—<small>para el sorteo · 22 de diciembre, 9:00</small></div></section>';
+  }
+
+  html += '<section class="card"><div class="kpis">' +
+    kpi(e(t.jugado), 'Jugado') +
+    kpi(e(t.bruto), 'Premios', true) +
+    kpi(e(t.neto), 'Neto a cobrar', true) +
+    kpi(t.personas + ' / ' + t.participaciones, 'Personas / números') +
+    '</div>' +
+    (S.fase !== 'antes' ? '<p class="nota" style="margin:10px 0 0">' + t.numerosPremiados + ' de ' + t.participaciones +
+      ' números con premio · reparto ' + (r.modo === 'bote' ? 'en bote (según lo que juega cada uno)' : 'individual (cada uno lo de su número)') + '</p>' : '') +
+    '</section>';
+
+  if (S.fase !== 'antes') html += pintarMayores();
+
+  if (S.altasAbiertas) {
+    html += '<section class="card"><h2>Apunta tu número</h2>' +
+      '<form id="form" autocomplete="on">' +
+      '<label>Nombre<input name="nombre" id="fNombre" required maxlength="40" placeholder="Tu nombre"></label>' +
+      '<label>Número<input name="numero" class="numero" required inputmode="numeric" pattern="[0-9]{1,5}" maxlength="5" placeholder="00000"></label>' +
+      '<label>Importe €<input name="importe" inputmode="decimal" value="' + S.importeDefecto + '"></label>' +
+      '<button class="btn" type="submit" id="fEnviar">Añadir</button>' +
+      '</form><p class="msg" id="msgForm"></p>' +
+      '<p class="nota">Un décimo son 20 €. Si compartís décimo, poned cada uno lo que juega (p. ej. 10 €).</p></section>';
+  } else if (S.fase === 'antes') {
+    html += '<section class="card"><p class="vacio">Las altas están cerradas.</p></section>';
+  }
+
+  if (r.personas.length) {
+    html += '<section class="card"><h2>' + (S.fase === 'antes' ? 'Quién juega' : 'Lo que le toca a cada uno') + '</h2><table><thead><tr>' +
+      '<th>Nombre</th><th class="ocultar-movil">Números</th><th class="num">Juega</th>' +
+      (S.fase !== 'antes' ? '<th class="num ocultar-movil">Premio</th><th class="num">Neto</th>' : '') +
+      '</tr></thead><tbody>' +
+      r.personas.map(function(p){
+        return '<tr><td><b>' + esc(p.nombre) + '</b></td><td class="ocultar-movil" style="font-family:var(--mono)">' + p.numeros.join(' · ') + '</td>' +
+          '<td class="num">' + e(p.jugado) + '</td>' +
+          (S.fase !== 'antes' ?  '<td class="num ocultar-movil">' + e(p.bruto) + '</td><td class="num ' + (p.neto > 0 ? 'pos' : 'neg') + '"><b>' + e(p.neto) + '</b></td>' : '') +
+          '</tr>';
+      }).join('') + '</tbody></table></section>';
+  }
+
+  html += '<section class="card"><h2>Participaciones</h2>';
+  if (r.participaciones.length > 6) html += '<input class="filtro" id="filtro" placeholder="Buscar nombre o número…">';
+  html += '<div class="lista" id="lista"></div></section>';
+
+  $('app').innerHTML = html;
+  pintarLista();
+  if ($('form')) prepararFormulario();
+  if ($('filtro')) $('filtro').addEventListener('input', pintarLista);
+  prepararCompartir();
+  iniciarCuenta();
+  programarRecarga();
+}
+
+function kpi(v, txt, oro){ return '<div class="kpi' + (oro ? ' oro' : '') + '"><b>' + v + '</b><span>' + txt + '</span></div>'; }
+
+function pintarEstado(){
+  var x = S.extraccion, txt, cls = '';
+  if (S.fase === 'antes') txt = 'Sorteo el 22 de diciembre · buscaremos premios cada 5 minutos';
+  else if (S.fase === 'en_curso') { cls = 'live'; txt = '<b>En directo</b> · ' + x.total + ' de ' + x.de + ' números'; }
+  else { cls = 'fin'; txt = '<b>Sorteo terminado</b> · ' + x.total + ' números'; }
+  if (S.ultimaActualizacion) txt += ' · actualizado ' + hora.format(new Date(S.ultimaActualizacion));
+  $('estado').innerHTML = '<span class="dot ' + cls + '"></span><span>' + txt + '</span>';
+}
+
+function pintarMayores(){
+  var x = S.extraccion;
+  function b(n, t, c){ return '<div class="bola ' + (c || '') + (n ? '' : ' vacia') + '"><div class="t">' + t + '</div><div class="n">' + (n || '·····') + '</div></div>'; }
+  var h = b(x.primero, 'El Gordo', 'gordo') + b(x.segundo, '2º premio') + b(x.tercero, '3er premio');
+  for (var i = 0; i < 2; i++) h += b(x.cuartos[i], '4º premio');
+  for (var j = 0; j < 8; j++) h += b(x.quintos[j], '5º premio');
+  return '<section class="card"><h2>Premios principales</h2><div class="mayores">' + h + '</div>' +
+    (x.primero ? '<p class="nota" style="margin:10px 0 0">Reintegro: terminados en <b>' + x.primero.slice(-1) + '</b></p>' : '') + '</section>';
+}
+
+function pintarLista(){
+  var q = $('filtro') ? $('filtro').value.trim().toLowerCase() : '';
+  var ps = S.resultado.participaciones.slice().sort(function(a, b){ return b.bruto - a.bruto || a.numero.localeCompare(b.numero); })
+    .filter(function(p){ return !q || p.nombre.toLowerCase().indexOf(q) >= 0 || p.numero.indexOf(q) >= 0; });
+  if (!ps.length) { $('lista').innerHTML = '<p class="vacio">' + (q ? 'Nada con ese filtro.' : 'Todavía no hay nadie. ¡Sé el primero de la última fila!') + '</p>'; return; }
+  $('lista').innerHTML = ps.map(function(p){
+    var tags = p.premios.map(function(x){ return '<span class="tag ' + x.clase + '">' + esc(x.etiqueta) + ' · ' + e(x.euros) + '/déc.</span>'; }).join('');
+    if (!tags && S.fase === 'terminado') tags = '<span class="tag">Sin premio</span>';
+    return '<div class="part' + (p.bruto > 0 ? ' premio' : '') + '">' +
+      '<div class="decimo">' + p.numero + '</div>' +
+      '<div class="quien"><b>' + esc(p.nombre) + '</b><span>juega ' + e(p.importe) + '</span></div>' +
+      '<div class="cuanto">' + (S.fase !== 'antes' ? '<b class="' + (p.bruto > 0 ? 'pos' : 'neg') + '">' + e(p.bruto) + '</b>' +
+        (p.impuesto > 0 ? '<span class="nota">neto ' + e(p.neto) + '</span>' : '') : '') + '</div>' +
+      (tags ? '<div class="tags">' + tags + '</div>' : '') +
+      (admin ? '<button class="borrar" data-id="' + esc(p.id) + '">Borrar</button>' : '') +
+      '</div>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.borrar'), function(btn){
+    btn.addEventListener('click', function(){
+      if (!confirm('¿Borrar esta participación?')) return;
+      btn.disabled = true;
+      llamar('borrarParticipacion', [btn.getAttribute('data-id'), $('pin').value], pintar, function(m){ alert(m); btn.disabled = false; });
+    });
+  });
+}
+
+function prepararFormulario(){
+  try { var n = localStorage.getItem('loteria_nombre'); if (n) $('fNombre').value = n; } catch (err) {}
+  $('form').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var f = ev.target, datos = { nombre: f.nombre.value, numero: f.numero.value, importe: f.importe.value };
+    try { localStorage.setItem('loteria_nombre', datos.nombre); } catch (err) {}
+    $('fEnviar').disabled = true; $('msgForm').className = 'msg'; $('msgForm').textContent = 'Guardando…';
+    llamar('anadirParticipacion', [datos], function(st){
+      pintar(st);
+      $('msgForm').className = 'msg ok'; $('msgForm').textContent = '¡Apuntado el ' + ('00000' + datos.numero).slice(-5) + '! Suerte 🍀';
+    }, function(m){
+      $('fEnviar').disabled = false; $('msgForm').className = 'msg err'; $('msgForm').textContent = m;
+    });
+  });
+}
+
+function prepararCompartir(){
+  var url = S.url || '';
+  var inv = '🎄 *Lotería de Navidad ' + S.anio + '* · ' + S.grupo + ' 🎓\n' +
+    'Apunta tu número (por defecto ' + S.importeDefecto + ' €) y el 22 de diciembre mira aquí en directo lo que nos toca:\n' + url;
+  $('waInvitar').href = 'https://wa.me/?text=' + encodeURIComponent(inv);
+  if (S.fase !== 'antes') {
+    var t = S.resultado.totales;
+    var lineas = ['🎄 *Lotería de Navidad ' + S.anio + '* · ' + S.grupo,
+      (S.fase === 'terminado' ? '✅ Sorteo terminado' : '🔴 En directo (' + S.extraccion.total + '/' + S.extraccion.de + ')'),
+      '💶 Jugado: ' + e(t.jugado) + ' · Premios: ' + e(t.bruto) + ' · Neto: ' + e(t.neto), ''];
+    S.resultado.personas.filter(function(p){ return p.neto > 0; }).forEach(function(p){
+      lineas.push('• ' + p.nombre + ': ' + e(p.neto));
+    });
+    if (lineas.length === 4) lineas.push('De momento nada… ¡seguimos! 🤞');
+    lineas.push('', url);
+    $('waResultado').href = 'https://wa.me/?text=' + encodeURIComponent(lineas.join('\n'));
+    $('waResultado').hidden = false;
+  }
+  $('copiar').onclick = function(){
+    if (!url) { $('msgCompartir').textContent = 'La app aún no está implementada como aplicación web.'; return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function(){
+      $('msgCompartir').className = 'msg ok'; $('msgCompartir').textContent = 'Enlace copiado.';
+    }, function(){ prompt('Copia el enlace:', url); });
+  };
+}
+
+function iniciarCuenta(){
+  clearInterval(cuentaAtras);
+  if (!$('cuenta')) return;
+  var objetivo = new Date(S.inicioSorteo).getTime();
+  function tic(){
+    var d = objetivo - Date.now();
+    if (d <= 0) { $('cuenta').innerHTML = '¡Ya está aquí!<small>en breve empiezan a salir premios</small>'; return; }
+    var dias = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4), s = Math.floor(d % 6e4 / 1e3);
+    $('cuenta').innerHTML = dias + 'd ' + ('0' + h).slice(-2) + 'h ' + ('0' + m).slice(-2) + 'm ' + ('0' + s).slice(-2) + 's' +
+      '<small>para el sorteo · 22 de diciembre, 9:00</small>';
+  }
+  tic(); cuentaAtras = setInterval(tic, 1000);
+}
+
+function programarRecarga(){
+  clearTimeout(temporizador);
+  var hoy = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' });
+  var diaSorteo = hoy === S.anio + '-12-22';
+  var ms = S.fase === 'en_curso' || (diaSorteo && S.fase !== 'terminado') ? 60e3 : 5 * 60e3;
+  temporizador = setTimeout(function(){
+    var activo = document.activeElement;
+    if (activo && activo.tagName === 'INPUT') { programarRecarga(); return; } // no pisar a quien está escribiendo
+    cargar();
+  }, ms);
+}
+
+$('activarAdmin').addEventListener('click', function(){
+  if (!$('pin').value) { $('msgAdmin').className = 'msg err'; $('msgAdmin').textContent = 'Escribe el PIN.'; return; }
+  admin = true; pintarLista(); $('msgAdmin').className = 'msg ok'; $('msgAdmin').textContent = 'Botones de borrar visibles (el PIN se comprueba al borrar).';
+});
+$('forzar').addEventListener('click', function(){
+  var b = this; b.disabled = true; $('msgAdmin').className = 'msg'; $('msgAdmin').textContent = 'Consultando loteriasyapuestas.es…';
+  llamar('forzarActualizacion', [$('pin').value], function(st){
+    b.disabled = false; pintar(st); $('msgAdmin').className = 'msg ok'; $('msgAdmin').textContent = st.aviso || 'Hecho.';
+  }, function(m){ b.disabled = false; $('msgAdmin').className = 'msg err'; $('msgAdmin').textContent = m; });
+});
+
+cargar();
+</script>
+</body>
+</html>
