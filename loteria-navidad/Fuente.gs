@@ -1,5 +1,6 @@
 /**
- * Descarga de resultados desde la web oficial de SELAE (Loterías y Apuestas del Estado).
+ * Descarga de resultados: primero la fuente de la comunidad (JSON público) y, de respaldo,
+ * la web oficial de SELAE (Loterías y Apuestas del Estado), que bloquea a Google con 403.
  *
  * Se ejecuta cada 5 minutos con un activador, pero sólo trabaja de verdad el día
  * del sorteo (22/12) entre las 8:00 y las 18:00 (hora de Madrid) y hasta que se
@@ -39,10 +40,20 @@ function actualizarResultados_() {
   var cfg = leerConfig();
   var resumen = { ok: false, mensaje: '', extraidos: 0 };
   try {
-    var id = String(cfg.ID_SORTEO || '').trim() || buscarIdSorteo_(cfg.ANIO);
-    if (!id) throw new Error('No encuentro el sorteo de Navidad ' + cfg.ANIO + ' en la web de SELAE.');
-    var datos = descargarPremios_(id);
-    var lista = interpretarSelae_(datos);
+    // 1º la fuente de la comunidad; si falla o aún no trae el sorteo de este año, SELAE.
+    var lista = [], id = 'comunidad', errores = [];
+    try {
+      var c = descargarComunidad_();
+      lista = interpretarComunidad_(c.resumen, c.lista, cfg.ANIO);
+    } catch (e) { errores.push(e.message); }
+    if (!lista.length) {
+      try {
+        id = String(cfg.ID_SORTEO || '').trim() || buscarIdSorteo_(cfg.ANIO);
+        if (!id) throw new Error('No encuentro el sorteo de Navidad ' + cfg.ANIO + ' en la web de SELAE.');
+        lista = interpretarSelae_(descargarPremios_(id));
+      } catch (e) { errores.push(e.message); }
+    }
+    if (!lista.length && errores.length) throw new Error(errores.join(' · '));
     if (lista.length) guardarExtraccion_(lista);
     var ext = construirExtraccion(lista.length ? lista : leerExtraccion_());
     resumen.ok = true;
@@ -118,6 +129,61 @@ function descargarPremios_(id) {
   return mejor || {};
 }
 
+// ------------------------------------------------------------ Fuente principal
+// JSON público que mantiene la comunidad desde que El País cerró su API:
+// https://github.com/pclemente/NumerosLoteriaNavidad
+var COMUNIDAD_BASE = 'https://api-loteria.pabloclementeperez.com/output/';
+
+function descargarComunidad_() {
+  function pedir(fichero) {
+    var res = UrlFetchApp.fetch(COMUNIDAD_BASE + fichero, { muteHttpExceptions: true, followRedirects: true });
+    if (res.getResponseCode() !== 200) throw new Error('La fuente de la comunidad respondió ' + res.getResponseCode() + ' en ' + fichero);
+    try { return JSON.parse(res.getContentText()); }
+    catch (e) { throw new Error('La fuente de la comunidad no devolvió JSON en ' + fichero); }
+  }
+  return { resumen: pedir('LoteriaNavidadResumen.json'), lista: pedir('LoteriaNavidad.json') };
+}
+
+/** Año de los datos de la fuente de la comunidad (campo year o, si no, timestamp en hora de Madrid). */
+function anioComunidad_(resumen, lista) {
+  var y = (resumen && resumen.year) || (lista && lista.year);
+  if (y) return String(y);
+  var ts = Number(resumen && resumen.timestamp);
+  if (!ts) return '';
+  return String(new Date((ts + 3600) * 1000).getUTCFullYear()); // +1 h (Madrid en diciembre)
+}
+
+/**
+ * Convierte la fuente de la comunidad en filas {numero, tipo}.
+ * - resumen: numero1 = 1º, numero2 = 2º, numero3 = 3º, numero4-5 = 4º, numero6-13 = 5º (-1 si aún no ha salido).
+ * - lista: { "numero": "euros por billete de 10 décimos", ... } con todo lo que cobra cada número.
+ *   La pedrea no viene marcada: es el número que cobra 100 €/décimo más de lo que explican los premios mayores.
+ * Devuelve [] si los datos no son del año pedido (antes del sorteo siguen siendo los del año anterior).
+ */
+function interpretarComunidad_(resumen, lista, anio) {
+  if (!resumen || Number(resumen.error)) return [];
+  if (anio && anioComunidad_(resumen, lista) !== String(anio)) return [];
+  var filas = [], mayores = {};
+  for (var i = 1; i <= 13; i++) {
+    var v = resumen['numero' + i];
+    if (v === undefined || v === null || v === '' || Number(v) < 0) continue;
+    var n = normalizarNumero(v);
+    if (!n || mayores[n]) continue;
+    mayores[n] = true;
+    filas.push({ numero: n, tipo: i === 1 ? 'PRIMERO' : i === 2 ? 'SEGUNDO' : i === 3 ? 'TERCERO' : i <= 5 ? 'CUARTO' : 'QUINTO' });
+  }
+  var ext = construirExtraccion(filas);
+  Object.keys(lista || {}).forEach(function (k) {
+    if (!/^\d{1,5}$/.test(k)) return; // status, error, timestamp, year…
+    var n = normalizarNumero(k);
+    if (!n || mayores[n]) return;
+    var porDecimo = Number(lista[k]) / 10;
+    var explicado = premiosDeNumero(n, ext).reduce(function (s, p) { return s + p.euros; }, 0);
+    if (porDecimo - explicado >= PREMIOS.PEDREA.euros) filas.push({ numero: n, tipo: 'PEDREA' });
+  });
+  return filas;
+}
+
 /**
  * Convierte la respuesta de SELAE en filas {numero, tipo}. Es tolerante con
  * variaciones de formato: primerPremio / segundoPremio / tercerosPremios /
@@ -160,4 +226,29 @@ function interpretarSelae_(d) {
     });
   }
   return filas;
+}
+
+/**
+ * Prueba las dos fuentes con el sorteo de Navidad de un año anterior (por defecto 2025).
+ * No escribe nada en la hoja: solo muestra en el registro lo que llega a Google.
+ * Ejecútala desde el editor: función «probarFuente».
+ */
+function probarFuente(anio) {
+  anio = String(anio || '2025');
+  function resumir(nombre, lista) {
+    var porTipo = {};
+    lista.forEach(function (x) { porTipo[x.tipo] = (porTipo[x.tipo] || 0) + 1; });
+    console.log(nombre + ': ' + lista.length + ' números · ' + JSON.stringify(porTipo));
+    lista.filter(function (x) { return x.tipo !== 'PEDREA'; }).forEach(function (x) { console.log('  ' + x.tipo + ': ' + x.numero); });
+  }
+  try {
+    var c = descargarComunidad_();
+    console.log('Comunidad: datos del año ' + anioComunidad_(c.resumen, c.lista) + ', estado ' + c.resumen.status);
+    resumir('Comunidad ' + anio, interpretarComunidad_(c.resumen, c.lista, anio));
+  } catch (e) { console.warn('Comunidad: ' + e.message); }
+  try {
+    var id = buscarIdSorteo_(anio);
+    if (!id) throw new Error('no encuentro el sorteo (¿bloqueo o cambio de formato?)');
+    resumir('SELAE ' + anio, interpretarSelae_(descargarPremios_(id)));
+  } catch (e) { console.warn('SELAE: ' + e.message); }
 }

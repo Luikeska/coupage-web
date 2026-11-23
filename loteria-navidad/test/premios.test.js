@@ -62,4 +62,16 @@ t('interpretar respuesta de SELAE', () => {
   assert.deepStrictEqual(m, { '72480': 'PRIMERO', '58303': 'SEGUNDO', '15905': 'TERCERO', '24262': 'CUARTO', '62246': 'CUARTO',
     '11840': 'QUINTO', '00001': 'PEDREA', '44444': 'QUINTO', '00033': 'PEDREA' });
 });
+t('interpretar la fuente de la comunidad (deduce la pedrea y comprueba el año)', () => {
+  ctx.resumen = { timestamp: 1766414850, status: 4, error: 0, numero1: 72480, numero2: 58303, numero3: 15905,
+    numero4: 24262, numero5: 62246, numero6: 11840, numero7: -1, numero8: -1, numero9: -1, numero10: -1,
+    numero11: -1, numero12: -1, numero13: -1 };
+  // € por billete (10 décimos): 00001 pedrea; 72481 aproximación; 72401 centena + pedrea; 00080 terminación + reintegro
+  ctx.lista = { status: '4', '72480': '4000000', '1': '1000', '72481': '20000', '72401': '2000', '80': '1200' };
+  const l = run('interpretarComunidad_(resumen, lista, "2025")');
+  const m = Object.fromEntries(l.map(x => [x.numero, x.tipo]));
+  assert.deepStrictEqual(m, { '72480': 'PRIMERO', '58303': 'SEGUNDO', '15905': 'TERCERO', '24262': 'CUARTO', '62246': 'CUARTO',
+    '11840': 'QUINTO', '00001': 'PEDREA', '72401': 'PEDREA' });
+  assert.strictEqual(run('interpretarComunidad_(resumen, lista, "2026").length'), 0, 'datos del año anterior se ignoran');
+});
 console.log(`\n${ok} pruebas OK`);

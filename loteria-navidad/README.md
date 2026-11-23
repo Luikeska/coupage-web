@@ -4,7 +4,7 @@ App web en **Google Apps Script** con base de datos en **Google Sheets** para la
 «Los de la Última Fila».
 
 - Cada uno apunta **nombre, número y dinero** (por defecto 20 € = un décimo; se puede jugar 10 €, 40 €…).
-- El **22 de diciembre**, cada 5 minutos (de 8:00 a 18:00), descarga los premiados de loteriasyapuestas.es.
+- El **22 de diciembre**, cada 5 minutos (de 8:00 a 18:00), descarga los premiados (fuente de la comunidad y, de respaldo, loteriasyapuestas.es).
 - Calcula **lo que toca a cada número y a cada persona**: Gordo, 2º, 3º, 4º, 5º, **pedrea**, aproximaciones,
   centenas, dos últimas cifras y **reintegro**, con el **neto** tras Hacienda (20 % sobre lo que pase de 40.000 € por décimo).
 - Botones para **compartir por WhatsApp**: la invitación con el enlace y, durante el sorteo, el resumen de premios.
@@ -16,7 +16,7 @@ App web en **Google Apps Script** con base de datos en **Google Sheets** para la
 |---|---|
 | `Code.gs` | App web (`doGet`), altas/bajas, lectura y escritura en la hoja, instalación (`configurar`) |
 | `Premios.gs` | Reglas y cálculo de premios (sin dependencias de Google, se prueba con Node) |
-| `Fuente.gs` | Descarga cada 5 minutos desde loteriasyapuestas.es |
+| `Fuente.gs` | Descarga cada 5 minutos los resultados; `probarFuente` lo prueba con el sorteo de 2025 |
 | `Index.html` | Interfaz (móvil primero) |
 | `appsscript.json` | Manifiesto: zona horaria Madrid, app web pública |
 | `test/premios.test.js` | Pruebas: `node test/premios.test.js` |
@@ -79,12 +79,21 @@ clasp push
 
 Los premios se acumulan. Si alguien juega otra cantidad, se paga proporcional (10 € → la mitad).
 
-## Plan B si la web oficial falla
+## De dónde salen los resultados
 
-La descarga usa los servicios JSON de loteriasyapuestas.es, que no son una API pública documentada:
-pueden cambiar de formato o bloquear peticiones de Google. **Pruébalo antes del sorteo** con
-«Buscar premios ahora» (PIN) o el menú 🎄 Lotería → Actualizar resultados ahora: un sorteo de Lotería
-Nacional anterior ya sirve de prueba poniendo su id en `ID_SORTEO`. Si no funciona el día 22:
+1. **Fuente principal:** el JSON público que mantiene la comunidad desde que El País cerró su API
+   ([pclemente/NumerosLoteriaNavidad](https://github.com/pclemente/NumerosLoteriaNavidad)):
+   `LoteriaNavidadResumen.json` (los 13 premios mayores) y `LoteriaNavidad.json` (lo que cobra cada número).
+   La pedrea no viene marcada: la app la deduce (número que cobra 100 €/décimo más de lo que explican los premios mayores).
+   Hasta que empieza el sorteo, esos ficheros traen el año anterior: la app solo los usa si son del `ANIO` configurado.
+2. **Respaldo:** los servicios JSON de loteriasyapuestas.es (SELAE). En noviembre de 2026 responden **403** a Google,
+   así que probablemente no sirvan.
+
+**Prueba:** en el editor de Apps Script ejecuta `probarFuente` (usa el sorteo de Navidad de 2025, no escribe nada en la hoja).
+Resultado en noviembre de 2026: la fuente de la comunidad funciona desde Google (13 premios mayores + 1.791 pedreas
+deducidas de 1.794; el resto de premios cuadra exacto con su lista), SELAE da 403.
+
+## Plan B si no llegan los resultados el día 22
 
 1. En `Config` pon `FUENTE` = `manual`.
 2. Apunta en la pestaña `Extraccion` los números (`Numero`, `Tipo`: PRIMERO, SEGUNDO, TERCERO, CUARTO, QUINTO, PEDREA).
