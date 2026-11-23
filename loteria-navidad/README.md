@@ -1,7 +1,7 @@
-# 🎄 Lotería de Navidad · Estudiantes · Los de la última fila
+# 🎄 Lotería de Navidad · Los de la Última Fila
 
-App web en **Google Apps Script** con base de datos en **Google Sheets** para la peña de la
-comparsa de Estudiantes de Villena.
+App web en **Google Apps Script** con base de datos en **Google Sheets** para la peña
+«Los de la Última Fila».
 
 - Cada uno apunta **nombre, número y dinero** (por defecto 20 € = un décimo; se puede jugar 10 €, 40 €…).
 - El **22 de diciembre**, cada 5 minutos (de 8:00 a 18:00), descarga los premiados de loteriasyapuestas.es.
@@ -54,7 +54,7 @@ clasp push
 | Clave | Valor por defecto | Para qué |
 |---|---|---|
 | `ANIO` | año actual | Año del sorteo |
-| `NOMBRE_GRUPO` | Estudiantes · Los de la última fila | Título de la app |
+| `NOMBRE_GRUPO` | Los de la Última Fila | Título de la app |
 | `IMPORTE_DEFECTO` | 20 | € que aparecen por defecto al apuntarse |
 | `MODO_REPARTO` | `individual` | `individual`: cada uno cobra lo de su número · `bote`: se suma todo y se reparte según lo que ha jugado cada uno |
 | `ADMIN_PIN` | 1234 | Borrar participaciones y forzar la búsqueda de premios desde la app |

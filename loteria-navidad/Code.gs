@@ -1,5 +1,5 @@
 /**
- * Lotería de Navidad · Comparsa de Estudiantes de Villena · "Los de la última fila"
+ * Lotería de Navidad · "Los de la Última Fila"
  *
  * App web de Google Apps Script con base de datos en Google Sheets.
  * Hojas: Participantes, Extraccion, Estado, Config (las crea `configurar()`).
@@ -13,7 +13,7 @@ var CLAVE_CACHE = 'estado_app_v1';
 
 var CONFIG_POR_DEFECTO = [
   ['ANIO', String(new Date().getFullYear()), 'Año del sorteo (22 de diciembre)'],
-  ['NOMBRE_GRUPO', 'Estudiantes · Los de la última fila', 'Nombre que aparece en la app'],
+  ['NOMBRE_GRUPO', 'Los de la Última Fila', 'Nombre que aparece en la app'],
   ['IMPORTE_DEFECTO', '20', 'Importe por defecto en € (un décimo = 20 €)'],
   ['MODO_REPARTO', 'individual', 'individual = cada uno cobra lo de su número · bote = se suma todo y se reparte según lo jugado'],
   ['ADMIN_PIN', '1234', 'PIN para borrar participaciones y forzar actualización. ¡Cámbialo!'],
@@ -207,7 +207,7 @@ function libro_() {
   if (id) return SpreadsheetApp.openById(id);
   var activo = SpreadsheetApp.getActiveSpreadsheet();
   if (activo) return activo;
-  var nuevo = SpreadsheetApp.create('Lotería de Navidad · Los de la última fila');
+  var nuevo = SpreadsheetApp.create('Lotería de Navidad · Los de la Última Fila');
   PropertiesService.getScriptProperties().setProperty('SPREADSHEET_ID', nuevo.getId());
   return nuevo;
 }

@@ -104,9 +104,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
 <body>
 <div class="wrap">
   <header>
-    <div class="kicker">Comparsa de Estudiantes · Villena</div>
+    <div class="kicker"><?= nombreGrupo ?></div>
     <h1>Lotería de Navidad <span><?= anio ?></span></h1>
-    <p class="sub"><?= nombreGrupo ?> 🎓🎄</p>
     <div class="estado" id="estado"><span class="dot"></span><span>Cargando…</span></div>
   </header>
 
@@ -280,7 +279,7 @@ function prepararFormulario(){
 
 function prepararCompartir(){
   var url = S.url || '';
-  var inv = '🎄 *Lotería de Navidad ' + S.anio + '* · ' + S.grupo + ' 🎓\n' +
+  var inv = '🎄 *Lotería de Navidad ' + S.anio + '* · ' + S.grupo + '\n' +
     'Apunta tu número (por defecto ' + S.importeDefecto + ' €) y el 22 de diciembre mira aquí en directo lo que nos toca:\n' + url;
   $('waInvitar').href = 'https://wa.me/?text=' + encodeURIComponent(inv);
   if (S.fase !== 'antes') {
